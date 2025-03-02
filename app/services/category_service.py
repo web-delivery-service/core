@@ -8,8 +8,9 @@ class CategoryService(BaseService):
 
     def __init__(
         self,
-        dto: CategoryDTO,
-        dao: CategoryDAO,
         session_factory,
     ):
-        super().__init__(dto, dao(session_factory=session_factory))
+        super().__init__(
+            dto=CategoryDTO,
+            dao=CategoryDAO(session_factory=session_factory),
+        )

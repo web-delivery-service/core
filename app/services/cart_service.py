@@ -8,8 +8,9 @@ class CartService(BaseService):
 
     def __init__(
         self,
-        dto: CartDTO,
-        dao: CartDAO,
         session_factory,
     ):
-        super().__init__(dto, dao(session_factory=session_factory))
+        super().__init__(
+            dto=CartDTO,
+            dao=CartDAO(session_factory=session_factory),
+        )

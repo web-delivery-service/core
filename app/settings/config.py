@@ -48,21 +48,20 @@ class Settings(BaseSettings):
 
 
 class AuthSettings(BaseSettings):
-    pass
-    # SECRET_KEY: str
-    # ALGORITHM: str
-    # ACCESS_TOKEN_EXPIRE_MINUTES: int
-    # REFRESH_TOKEN_EXPIRE_MINUTES: int
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    REFRESH_TOKEN_EXPIRE_MINUTES: int
 
-    # REFRESH_COOKIE_KEY: str
-    # COOKIE_DOMAIN: str
+    REFRESH_COOKIE_KEY: str
+    COOKIE_DOMAIN: str
 
-    # JWT_PRIVATE_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_privatekey.pem"
-    # JWT_PUBLIC_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_publickey.pem"
+    JWT_PRIVATE_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_privatekey.pem"
+    JWT_PUBLIC_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_publickey.pem"
 
-    # model_config = SettingsConfigDict(
-    #     case_sensitive=True, env_file=BASE_DIR / "auth" / ".env"
-    # )
+    model_config = SettingsConfigDict(
+        case_sensitive=True, env_file=BASE_DIR / "auth" / ".env"
+    )
 
 
 auth_settings = AuthSettings()

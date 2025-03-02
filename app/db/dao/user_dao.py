@@ -1,3 +1,7 @@
+from typing import Optional
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncResult
+
 from app.db.models.user import User
 from app.db.models.base import ModelType
 
@@ -9,3 +13,9 @@ class UserDAO(CRUDBaseDAO):
 
     def __init__(self, session_factory):
         super().__init__(session_factory=session_factory)
+
+    async def get_by_email(self, *, email: str) -> Optional[User]:
+        async with self.session_factory() as conn:
+            query = select(self.model).where(self.model.email == email)
+            result: AsyncResult = await conn.execute(query)
+            return result.scalar_one_or_none()
