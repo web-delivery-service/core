@@ -19,30 +19,30 @@ class Settings(BaseSettings):
     DB_OUTER_PORT: int
     DB_NAME: str
 
-    # S3_ACCESS_KEY: str
-    # S3_PIVATE_KEY: str
-    # S3_BUCKET_NAME: str
-    # S3_BUCKET_NAME_GROUPS: str
-    # S3_URL: str
-    # S3_FILE_FORMAT: str
+    S3_ACCESS_KEY: str
+    S3_PIVATE_KEY: str
+    S3_BUCKET_NAME: str
+    S3_BUCKET_NAME_GROUPS: str
+    S3_URL: str
+    S3_FILE_FORMAT: str
 
-    # SMTP_HOST: str
-    # SMTP_PORT: int
-    # SMTP_USER: str
-    # SMTP_PASSWORD: str
+    SMTP_HOST: str
+    SMTP_PORT: int
+    SMTP_USER: str
+    SMTP_PASSWORD: str
 
-    # REDIS_PORT: int
-    # REDIS_HOST: str
-    # REDIS_PASSWORD: str
-    # REDIS_USER: str
+    JOBS_BROKER_PORT: int
+    JOBS_BROKER_HOST: str
+    JOBS_BROKER_PASSWORD: str
+    JOBS_BROKER_USER: str
 
     @property
     def DB_URL(self):
         return f"{self.SUBD}+{self.BD_ENGINE}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_OUTER_PORT}/{self.DB_NAME}"
 
-    # @property
-    # def REDIS_URI(self):
-    #     return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
+    @property
+    def JOBS_BROKER_URI(self):
+        return f"redis://{self.JOBS_BROKER_HOST}:{self.JOBS_BROKER_PORT}"
 
     model_config = SettingsConfigDict(env_file=".env")
 
@@ -55,6 +55,8 @@ class AuthSettings(BaseSettings):
 
     REFRESH_COOKIE_KEY: str
     COOKIE_DOMAIN: str
+
+    ADMIN_EMAIL: str
 
     JWT_PRIVATE_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_privatekey.pem"
     JWT_PUBLIC_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_publickey.pem"

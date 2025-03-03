@@ -8,10 +8,15 @@ from app.dto.category_dto import (
     CategoryCreateDTO,
     CategoryUpdateDTO,
 )
+from app.dto.product_dto import ProductDTO
+from app.dto.user_dto import UserDTO
 from app.services.category_service import CategoryService
+from app.services.product_service import ProductService
 
-from app.api.deps import get_category_service
+from app.api.deps import get_category_service, get_product_service
 from app.exceptions.category import CategoryNotFoundException
+
+from app.auth.deps import get_admin, get_current_user
 
 
 class CategoryController(ControllerContract):
@@ -27,6 +32,7 @@ class CategoryController(ControllerContract):
     )
     async def get_all(
         category_service: CategoryService = Depends(get_category_service),
+        user: UserDTO = Depends(get_current_user),
     ) -> List[CategoryDTO]:
         return await category_service.get_all()
 
@@ -40,8 +46,25 @@ class CategoryController(ControllerContract):
     async def get_one(
         id: int,
         category_service: CategoryService = Depends(get_category_service),
+        user: UserDTO = Depends(get_current_user),
     ) -> CategoryDTO:
         result = await category_service.get_by_id(id=id)
+        if not result:
+            raise CategoryNotFoundException
+        return result
+
+    @router.get(
+        "/{id}/products",
+        response_model=List[ProductDTO],
+        summary="Get all products by category",
+        description="Retrieve a list products by category.",
+        response_description="A list of products.",
+    )
+    async def get_products_by_category(
+        id: int,
+        product_service: ProductService = Depends(get_product_service),
+    ) -> List[ProductDTO]:
+        result = await product_service.get_by_category_id(category_id=id)
         if not result:
             raise CategoryNotFoundException
         return result
@@ -57,6 +80,7 @@ class CategoryController(ControllerContract):
     async def store(
         entity_in: CategoryCreateDTO,
         category_service: CategoryService = Depends(get_category_service),
+        admin: UserDTO = Depends(get_admin),
     ) -> CategoryDTO:
         return await category_service.create(entity_in=entity_in)
 
@@ -71,6 +95,7 @@ class CategoryController(ControllerContract):
         id: int,
         entity_in: CategoryUpdateDTO,
         category_service: CategoryService = Depends(get_category_service),
+        admin: UserDTO = Depends(get_admin),
     ) -> CategoryDTO:
         result = await category_service.update(id=id, entity_in=entity_in)
         if not result:
@@ -87,6 +112,7 @@ class CategoryController(ControllerContract):
     async def delete(
         id: int,
         category_service: CategoryService = Depends(get_category_service),
+        admin: UserDTO = Depends(get_admin),
     ) -> None:
         result = await category_service.delete(id=id)
         if not result:

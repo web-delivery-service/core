@@ -4,6 +4,7 @@ from app.services.product_service import ProductService
 from app.services.cart_service import CartService
 from app.services.cart_product_service import CartProductService
 from app.services.user_service import UserService
+from app.services.order_service import OrderService
 
 from app.db.db_manager import db_manager
 
@@ -40,5 +41,11 @@ def get_cart_product_service():
 
 def get_user_service():
     return UserService(
+        session_factory=db_manager.session_factory,
+    )
+
+
+def get_order_service():
+    return OrderService(
         session_factory=db_manager.session_factory,
     )

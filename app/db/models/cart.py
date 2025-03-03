@@ -20,5 +20,5 @@ class Cart(Base, IDBaseModel):
         "CartProduct",
         back_populates="cart",
         cascade="all, delete-orphan",
-        lazy="joined",
+        lazy="select",
     )

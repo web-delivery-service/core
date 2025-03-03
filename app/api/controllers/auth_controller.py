@@ -16,7 +16,7 @@ from app.api.controllers.controller_contract import ControllerContract
 
 from app.api.deps import get_user_service, get_auth_service
 
-from app.auth.deps import get_current_user, get_current_user_for_refresh
+from app.auth.deps import get_current_user, get_current_user_for_refresh, get_admin
 from app.settings.config import auth_settings
 
 from app.auth.exceptions import UserDoesNotExist
@@ -111,6 +111,7 @@ class AuthController:
     async def delete(
         id: int,
         user_service: UserService = Depends(get_user_service),
+        # admin: UserDTO = Depends(get_admin),
     ) -> None:
         result = await user_service.delete(id=id)
         if not result:

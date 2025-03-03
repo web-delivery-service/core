@@ -10,6 +10,8 @@ class Mapper:
 
     @classmethod
     def model_to_dto(cls, *, model: ModelType, dto: DTOType):
+        if model is None:
+            return None
         return dto.model_validate(model)
 
     @classmethod

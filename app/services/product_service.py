@@ -1,7 +1,9 @@
+from typing import List
 from app.services.base_service import BaseService
 
 from app.db.dao.product_dao import ProductDAO
 from app.dto.product_dto import ProductDTO
+from app.utils.mapper import Mapper
 
 
 class ProductService(BaseService):
@@ -14,3 +16,7 @@ class ProductService(BaseService):
             dto=ProductDTO,
             dao=ProductDAO(session_factory=session_factory),
         )
+
+    async def get_by_category_id(self, *, category_id: int) -> List[ProductDTO]:
+        result = await self.dao.get_by_category_id(category_id=category_id)
+        return [Mapper.model_to_dto(model=model, dto=self.dto) for model in result]

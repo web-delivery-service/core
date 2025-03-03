@@ -8,8 +8,8 @@ class UserCreateDTO(CreateDTO):
     email: EmailStr
     password: str
     role: RoleEnum = RoleEnum.USER
-    name: str | None
-    address: str | None
+    name: str | None = None
+    address: str | None = None
 
 
 class UserDTO(BaseDTO):

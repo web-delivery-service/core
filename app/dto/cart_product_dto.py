@@ -7,7 +7,7 @@ class CartProductCreateDTO(CreateDTO):
     quantity: int
 
 
-class CartProductDTO(CartProductCreateDTO, BaseDTO):
+class CartProductDTO(CartProductCreateDTO):
     pass
 
 

@@ -28,6 +28,7 @@ class CartController(ControllerContract):
         response_description="A list of categories.",
     )
     async def get_products_by_cart(
+        id: int,
         product_service: ProductService = Depends(get_product_service),
     ) -> List[ProductDTO]:
-        return await product_service.get_all()
+        return await product_service.get_by_category_id(category_id=id)
