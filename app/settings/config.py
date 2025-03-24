@@ -9,6 +9,14 @@ class Settings(BaseSettings):
     FASTAPI_APP_HOST: str
     FASTAPI_APP_PORT: int
 
+    PROJECT_NAME: str
+    PROJECT_VERSION: str
+    PROJECT_DESCRIPTION: str
+
+    BACKEND_CORS_ORIGINS: str
+    BACKEND_CORS_METHODS: str
+    BACKEND_CORS_HEADERS: str
+
     SUBD: str
     BD_ENGINE: str
 

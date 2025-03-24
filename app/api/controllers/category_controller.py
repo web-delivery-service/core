@@ -24,7 +24,7 @@ class CategoryController(ControllerContract):
     router = APIRouter(prefix="/categories")
 
     @router.get(
-        "/",
+        "",
         response_model=List[CategoryDTO],
         summary="Get all categories",
         description="Retrieve a list of all categories.",
@@ -32,7 +32,6 @@ class CategoryController(ControllerContract):
     )
     async def get_all(
         category_service: CategoryService = Depends(get_category_service),
-        user: UserDTO = Depends(get_current_user),
     ) -> List[CategoryDTO]:
         return await category_service.get_all()
 
@@ -70,7 +69,7 @@ class CategoryController(ControllerContract):
         return result
 
     @router.post(
-        "/",
+        "",
         response_model=CategoryDTO,
         status_code=status.HTTP_201_CREATED,
         summary="Create a new category",

@@ -49,7 +49,7 @@ class AuthController:
         return await user_service.create(credentials=credentials)
 
     @router.post(
-        "/login/",
+        "/login",
         response_model_exclude_none=True,
         summary="Login a user",
         response_description="Access token",
@@ -68,10 +68,10 @@ class AuthController:
             httponly=True,
         )
 
-        return TokenInfo(access_token=token_pair.access_token)
+        return TokenInfo(access_token=token_pair.access_token, refresh_token=token_pair.refresh_token)
 
     @router.post(
-        "/refresh/",
+        "/refresh",
         response_model_exclude_none=True,
         summary="Refresh access token",
         response_description="Access token.",
@@ -85,7 +85,7 @@ class AuthController:
         return access_token
 
     @router.post(
-        "/logout/",
+        "/logout",
         summary="Logout a user",
         response_description="Logout message.",
     )

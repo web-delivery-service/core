@@ -17,6 +17,17 @@ class UserController:
     router = APIRouter(prefix="/users")
     http_bearer = HTTPBearer()
 
+    @router.get(
+        "/",
+        response_model=List[UserDTO],
+        summary="Get all users",
+        description="Retrieve a list of all users.",
+    )
+    async def get_all(
+        user_service: UserService = Depends(get_user_service),
+    ) -> List[UserDTO]:
+        return await user_service.get_all()
+
     @router.patch(
         "/",
         response_model=UserDTO,

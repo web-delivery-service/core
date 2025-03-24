@@ -7,11 +7,15 @@ class ProductCreateDTO(CreateDTO):
     quantity: int = 1
     cost: int
     info: str | None
+
+
+class ProductDTO(BaseDTO):
+    category_id: int
+    title: str
+    quantity: int = 1
+    cost: int
+    info: str | None
     image_id: str | None
-
-
-class ProductDTO(ProductCreateDTO, BaseDTO):
-    pass
 
 
 class ProductUpdateDTO(UpdateDTO):
@@ -20,4 +24,7 @@ class ProductUpdateDTO(UpdateDTO):
     quantity: int | None
     cost: int | None
     info: str | None
-    image_id: str | None
+
+
+class ProductImageIDUpdateDTO(BaseDTO):
+    image_id: str

@@ -1,5 +1,6 @@
 from typing import List
-from fastapi import APIRouter, Depends, status
+from uuid import uuid4
+from fastapi import APIRouter, Depends, UploadFile, status
 
 from app.api.controllers.controller_contract import ControllerContract
 
@@ -7,11 +8,14 @@ from app.dto.product_dto import (
     ProductDTO,
     ProductCreateDTO,
     ProductUpdateDTO,
+    ProductImageIDUpdateDTO,
 )
 from app.services.product_service import ProductService
 
 from app.api.deps import get_product_service
 from app.exceptions.product import ProductNotFoundException
+from app.exceptions.S3 import S3ConnectionException
+from app.S3.service import s3_service
 
 
 class ProductController(ControllerContract):
@@ -19,7 +23,7 @@ class ProductController(ControllerContract):
     router = APIRouter(prefix="/products")
 
     @router.get(
-        "/",
+        "",
         response_model=List[ProductDTO],
         summary="Get all products",
         description="Retrieve a list of all products.",
@@ -47,7 +51,7 @@ class ProductController(ControllerContract):
         return result
 
     @router.post(
-        "/",
+        "",
         response_model=ProductDTO,
         status_code=status.HTTP_201_CREATED,
         summary="Create a new product",
@@ -91,3 +95,49 @@ class ProductController(ControllerContract):
         result = await product_service.delete(id=id)
         if not result:
             raise ProductNotFoundException
+        
+    @router.post(
+        "/{id}/image",
+        status_code=status.HTTP_201_CREATED,
+        summary="Upload an image for a product",
+        description="Upload an image for a product by its ID.",
+        response_description="details",
+    )
+    async def upload_image(
+        id: int,
+        image: UploadFile,
+        product_service: ProductService = Depends(get_product_service),
+    ):
+        uuid = uuid4()
+        try:
+            await s3_service.upload_file(file=image, object_name=uuid)
+        except Exception as e:
+            raise S3ConnectionException
+        
+        await product_service.update(id=id, entity_in=ProductImageIDUpdateDTO(image_id=uuid))
+
+        return {
+            "message": "Image uploaded successfully"
+        }
+
+    @router.delete(
+        "/{id}/image",
+        status_code=status.HTTP_204_NO_CONTENT,
+        summary="Delete an image for a product",
+        description="Delete an image for a product by its ID.",
+        response_description="No content.",
+    )
+    async def delete_image(
+        id: int,
+        product_service: ProductService = Depends(get_product_service),
+    ):
+        result: ProductDTO = await product_service.get_by_id(id=id)
+        if not result:
+            raise ProductNotFoundException
+        
+        try:
+            await s3_service.delete_file(object_name=result.image_id)
+        except Exception as e:
+            raise S3ConnectionException
+        
+        await product_service.update(id=id, entity_in=ProductImageIDUpdateDTO(image_id=None))
