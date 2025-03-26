@@ -9,7 +9,11 @@ from app.dto.product_dto import (
     ProductCreateDTO,
     ProductUpdateDTO,
     ProductImageIDUpdateDTO,
+    ProductFilterDTO    
 )
+
+from app.dto.product_dto import get_product_filter_params
+
 from app.services.product_service import ProductService
 
 from app.api.deps import get_product_service
@@ -30,10 +34,11 @@ class ProductController(ControllerContract):
         response_description="A list of products.",
     )
     async def get_all(
+        filter: ProductFilterDTO = Depends(get_product_filter_params),
         product_service: ProductService = Depends(get_product_service),
     ) -> List[ProductDTO]:
-        return await product_service.get_all()
-
+        return await product_service.get_all(filter=filter)
+    
     @router.get(
         "/{id}",
         response_model=ProductDTO,
