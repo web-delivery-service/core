@@ -11,5 +11,12 @@ class CartProductDTO(CartProductCreateDTO):
     pass
 
 
-class CartProductUpdateDTO(CartProductCreateDTO):
-    pass
+class CartProductUpdateDTO(CreateDTO):
+    cart_id: int
+    product_id: int
+    quantity: int
+
+
+class CartProductDeleteDTO(CreateDTO):
+    cart_id: int
+    product_id: int

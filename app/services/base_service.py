@@ -31,8 +31,10 @@ class BaseService:
             return None
         return Mapper.model_to_dto(model=result, dto=self.dto)
 
-    async def get_by_user_id(self, *, user_id: int) -> List[DTOType]:
-        result = await self.dao.get_by_user_id(user_id=user_id)
+    async def get_by_user_id(self, *, user_id: int, one_instance: bool = False) -> List[DTOType]:
+        result = await self.dao.get_by_user_id(user_id=user_id, one_instance=one_instance)
+        if one_instance:
+            return Mapper.model_to_dto(model=result, dto=self.dto)
         return [Mapper.model_to_dto(model=model, dto=self.dto) for model in result]
 
     async def create(self, *, entity_in: CreateDTOType) -> Optional[DTOType]:

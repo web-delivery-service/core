@@ -24,10 +24,12 @@ class CRUDBaseDAO:
             result: AsyncResult = await conn.execute(query)
             return result.scalars().all()
 
-    async def get_by_user_id(self, *, user_id: int) -> List[ModelType]:
+    async def get_by_user_id(self, *, user_id: int, one_instance: bool = False) -> List[ModelType]:
         async with self.session_factory() as conn:
             query = select(self.model).filter_by(user_id=user_id)
             result: AsyncResult = await conn.execute(query)
+            if one_instance:
+                return result.scalar_one_or_none()
             return result.scalars().all()
 
     async def create(self, *, entity_in: dict) -> Optional[ModelType]:

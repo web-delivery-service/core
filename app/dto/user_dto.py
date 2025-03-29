@@ -1,6 +1,6 @@
 from pydantic import EmailStr
 
-from app.dto.base_dto import CreateDTO, BaseDTO
+from app.dto.base_dto import CreateDTO, BaseDTO, BaseModel
 from app.db.models.user import RoleEnum
 
 
@@ -27,5 +27,7 @@ class UserWithPasswordDTO(BaseDTO):
     address: str | None
 
 
-class UserUpdateDTO(UserCreateDTO):
-    pass
+class UserUpdateDTO(BaseModel):
+    email: EmailStr
+    name: str | None = None
+    address: str | None = None

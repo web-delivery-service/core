@@ -36,13 +36,11 @@ class UserController:
         response_description="The updated user.",
     )
     async def update(
-        self,
-        id: int,
         user_in: UserUpdateDTO,
         user_service: UserService = Depends(get_user_service),
         user: UserDTO = Depends(get_current_user),
     ) -> UserDTO:
-        return await user_service.update(id=id, entity_in=user_in)
+        return await user_service.update(id=user.id, entity_in=user_in)
 
     @router.get(
         "/orders",
@@ -52,8 +50,6 @@ class UserController:
         response_description="A list of orders.",
     )
     async def get_orders_by_user(
-        self,
-        id: int,
         order_service: OrderService = Depends(get_order_service),
         user: UserDTO = Depends(get_current_user),
     ) -> List[OrderDTO]:
