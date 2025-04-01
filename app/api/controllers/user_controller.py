@@ -53,4 +53,4 @@ class UserController:
         order_service: OrderService = Depends(get_order_service),
         user: UserDTO = Depends(get_current_user),
     ) -> List[OrderDTO]:
-        return await order_service.get_by_user_id(user_id=id)
+        return await order_service.get_by_user_id(user_id=user.id)

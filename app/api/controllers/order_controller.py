@@ -22,7 +22,7 @@ class OrderController(ControllerContract):
     router = APIRouter(prefix="/orders")
 
     @router.get(
-        "/",
+        "",
         response_model=List[OrderDTO],
         summary="Get all orders",
         description="Retrieve a list of all orders.",
@@ -52,26 +52,26 @@ class OrderController(ControllerContract):
         return result
 
     @router.post(
-        "/",
+        "",
         response_model=OrderDTO,
         status_code=status.HTTP_201_CREATED,
-        summary="Create a new category",
-        description="Create a new category with the provided data.",
-        response_description="The created category.",
+        summary="Create a new order",
+        description="Create a new order with the provided data.",
+        response_description="The created order.",
     )
     async def store(
         entity_in: OrderCreateDTO,
         order_service: OrderService = Depends(get_order_service),
-        admin: UserDTO = Depends(get_admin),
+        user: UserDTO = Depends(get_current_user),
     ) -> OrderDTO:
         return await order_service.create(entity_in=entity_in)
 
     @router.patch(
         "/{id}",
         response_model=OrderDTO,
-        summary="Update a category",
-        description="Update an existing category with the provided data.",
-        response_description="The updated category.",
+        summary="Update a order",
+        description="Update an existing order with the provided data.",
+        response_description="The updated order.",
     )
     async def update(
         id: int,
@@ -87,8 +87,8 @@ class OrderController(ControllerContract):
     @router.delete(
         "/{id}",
         status_code=status.HTTP_204_NO_CONTENT,
-        summary="Delete a category",
-        description="Delete a category by its ID.",
+        summary="Delete a order",
+        description="Delete a order by its ID.",
         response_description="No content.",
     )
     async def delete(

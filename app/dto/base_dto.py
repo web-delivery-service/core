@@ -6,7 +6,7 @@ from app.utils.camel import to_camel
 
 class CreateDTO(BaseModel):
     model_config = ConfigDict(
-        from_attributes=True, alias_generator=to_camel, populate_by_name=True
+        from_attributes=True, alias_generator=to_camel, populate_by_name=True, arbitrary_types_allowed=True
     )
 
 

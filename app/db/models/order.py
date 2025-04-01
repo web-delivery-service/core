@@ -19,7 +19,7 @@ class Order(Base, IDBaseModel):
     )
 
     status: Mapped[str] = mapped_column(
-        PgEnum(StatusEnum, name="role_enum", create_type=False),
+        PgEnum(StatusEnum, name="status_enum", create_type=False),
         default=StatusEnum.PROCESS,
     )
     cost: Mapped[int]

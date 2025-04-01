@@ -44,7 +44,7 @@ def upgrade() -> None:
     )
     op.create_table('order',
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('status', postgresql.ENUM('PROCESS', 'ONTHEWAY', 'DELIVERED', name='role_enum'), nullable=False),
+    sa.Column('status', postgresql.ENUM('PROCESS', 'ONTHEWAY', 'DELIVERED', name='status_enum'), nullable=False),
     sa.Column('cost', sa.Integer(), nullable=False),
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),

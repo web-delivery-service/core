@@ -1,16 +1,21 @@
+from typing import List
+
 from app.dto.base_dto import CreateDTO, BaseDTO
 from app.db.models.order import StatusEnum
+
+from app.dto.user_dto import UserDTO
+from app.dto.order_product_dto import OrderProductDTO
 
 
 class OrderCreateDTO(CreateDTO):
     user_id: int
-    status: StatusEnum
+    status: StatusEnum | None
     cost: int
 
 
 class OrderDTO(OrderCreateDTO, BaseDTO):
-    pass
-
+    user: UserDTO
+    products: List[OrderProductDTO]
 
 class OrderUpdateDTO(OrderCreateDTO):
     pass
