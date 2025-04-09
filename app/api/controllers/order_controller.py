@@ -7,12 +7,13 @@ from app.dto.order_dto import (
     OrderDTO,
     OrderCreateDTO,
     OrderUpdateDTO,
+    OrderUpdateStatusDTO
 )
 from app.dto.user_dto import UserDTO
 from app.services.order_service import OrderService
 
 from app.api.deps import get_order_service
-from app.exceptions.category import CategoryNotFoundException
+from app.exceptions.order import OrderNotFoundException
 
 from app.auth.deps import get_admin, get_current_user
 
@@ -48,22 +49,21 @@ class OrderController(ControllerContract):
     ) -> OrderDTO:
         result = await order_service.get_by_id(id=id)
         if not result:
-            raise CategoryNotFoundException
+            raise OrderNotFoundException
         return result
 
     @router.post(
         "",
-        response_model=OrderDTO,
         status_code=status.HTTP_201_CREATED,
         summary="Create a new order",
         description="Create a new order with the provided data.",
-        response_description="The created order.",
+        response_description="The created order ID.",
     )
     async def store(
         entity_in: OrderCreateDTO,
         order_service: OrderService = Depends(get_order_service),
         user: UserDTO = Depends(get_current_user),
-    ) -> OrderDTO:
+    ) -> int:
         return await order_service.create(entity_in=entity_in)
 
     @router.patch(
@@ -81,8 +81,22 @@ class OrderController(ControllerContract):
     ) -> OrderDTO:
         result = await order_service.update(id=id, entity_in=entity_in)
         if not result:
-            raise CategoryNotFoundException
+            raise OrderNotFoundException
         return result
+    
+    @router.patch(
+        "/{id}/status",
+        summary="Update a order status",
+        description="Update an existing order status with the provided data.",
+        response_description="The updated order.",
+    )
+    async def update_status(
+        id: int,
+        entity_in: OrderUpdateStatusDTO,
+        order_service: OrderService = Depends(get_order_service),
+        admin: UserDTO = Depends(get_admin),
+    ) -> None:
+        await order_service.update_status(order_id=id, entity_in=entity_in)
 
     @router.delete(
         "/{id}",
@@ -98,4 +112,4 @@ class OrderController(ControllerContract):
     ) -> None:
         result = await order_service.delete(id=id)
         if not result:
-            raise CategoryNotFoundException
+            raise OrderNotFoundException

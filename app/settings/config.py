@@ -30,7 +30,6 @@ class Settings(BaseSettings):
     S3_ACCESS_KEY: str
     S3_PIVATE_KEY: str
     S3_BUCKET_NAME: str
-    S3_BUCKET_NAME_GROUPS: str
     S3_URL: str
     S3_FILE_FORMAT: str
 
@@ -65,6 +64,7 @@ class AuthSettings(BaseSettings):
     COOKIE_DOMAIN: str
 
     ADMIN_EMAIL: str
+    ADMIN_PANEL_URL: str
 
     JWT_PRIVATE_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_privatekey.pem"
     JWT_PUBLIC_KEY_PATH: Path = BASE_DIR / "auth" / "certs" / "jwt_publickey.pem"

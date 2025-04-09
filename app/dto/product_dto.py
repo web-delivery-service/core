@@ -29,8 +29,8 @@ class ProductUpdateDTO(UpdateDTO):
     info: str | None
 
 
-class ProductImageIDUpdateDTO(BaseDTO):
-    image_id: str
+class ProductImageIDUpdateDTO(CreateDTO):
+    image_id: str | None
 
 
 class ProductFilterDTO(CreateDTO):

@@ -7,7 +7,7 @@ from app.db.models.base import Base, IDBaseModel
 
 class Cart(Base, IDBaseModel):
     user_id: Mapped[int] = mapped_column(
-        ForeignKey(column="user.id", ondelete="CASCADE"),
+        ForeignKey(column="user.id", ondelete="CASCADE"), unique=True
     )
 
     user: Mapped["User"] = relationship(

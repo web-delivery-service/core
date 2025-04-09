@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncResult
 
 from app.db.models.product import Product
@@ -23,7 +23,6 @@ class ProductDAO(CRUDBaseDAO):
         
     async def get_all(self, *, filter: ProductFilterDTO) -> List[Product]:
         async with self.session_factory() as conn:
-            print(filter)
             query = select(self.model)
             
             if filter.title is not None:
@@ -40,3 +39,21 @@ class ProductDAO(CRUDBaseDAO):
             
             result: AsyncResult = await conn.execute(query)
             return result.scalars().all()
+        
+    
+    async def decrease_quantity(self, *, product_id: int, quantity: int) -> None:
+        async with self.session_factory() as conn:
+            async with conn.begin():
+                query = select(self.model).filter_by(id=product_id)
+                result: AsyncResult = await conn.execute(query)
+                product: Product = result.scalar_one_or_none()
+
+                if quantity < 1 or quantity > product.quantity:
+                    return
+
+                query = (
+                    update(self.model)
+                    .filter_by(id=product_id)
+                    .values(quantity=product.quantity - quantity)
+                )
+                await conn.execute(query)

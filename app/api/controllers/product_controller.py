@@ -1,6 +1,6 @@
 from typing import List
 from uuid import uuid4
-from fastapi import APIRouter, Depends, UploadFile, status
+from fastapi import APIRouter, Depends, UploadFile, status, File
 
 from app.api.controllers.controller_contract import ControllerContract
 
@@ -110,10 +110,10 @@ class ProductController(ControllerContract):
     )
     async def upload_image(
         id: int,
-        image: UploadFile,
+        image: UploadFile = File(...),
         product_service: ProductService = Depends(get_product_service),
     ):
-        uuid = uuid4()
+        uuid = uuid4().hex
         try:
             await s3_service.upload_file(file=image, object_name=uuid)
         except Exception as e:

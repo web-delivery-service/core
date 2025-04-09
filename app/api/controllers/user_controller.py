@@ -25,6 +25,7 @@ class UserController:
     )
     async def get_all(
         user_service: UserService = Depends(get_user_service),
+        user: UserDTO = Depends(get_current_user),
     ) -> List[UserDTO]:
         return await user_service.get_all()
 

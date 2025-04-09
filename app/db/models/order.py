@@ -4,7 +4,7 @@ import enum
 from sqlalchemy.dialects.postgresql import ENUM as PgEnum
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
-from app.db.models.base import Base, IDBaseModel
+from app.db.models.base import Base, IDBaseModel, TimeStampedCreateModel
 
 
 class StatusEnum(enum.Enum):
@@ -13,7 +13,7 @@ class StatusEnum(enum.Enum):
     DELIVERED = "DELIVERED"
 
 
-class Order(Base, IDBaseModel):
+class Order(Base, IDBaseModel, TimeStampedCreateModel):
     user_id: Mapped[int] = mapped_column(
         ForeignKey(column="user.id", ondelete="CASCADE"),
     )

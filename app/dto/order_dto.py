@@ -19,3 +19,6 @@ class OrderDTO(OrderCreateDTO, BaseDTO):
 
 class OrderUpdateDTO(OrderCreateDTO):
     pass
+
+class OrderUpdateStatusDTO(CreateDTO):
+    status: StatusEnum | str

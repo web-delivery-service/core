@@ -87,7 +87,7 @@ class CartProductDAO(CRUDBaseDAO):
                 return result.scalar_one_or_none()
             
 
-    async def delete_by_cart_id(self, *, cart_id: int) -> Optional[int]:
+    async def delete_by_cart_id(self, *, cart_id: int):
         async with self.session_factory() as conn:
             async with conn.begin():
                 query = (
@@ -95,5 +95,4 @@ class CartProductDAO(CRUDBaseDAO):
                     .filter_by(cart_id=cart_id)
                     .returning(self.model.product_id)
                 )
-                result: AsyncResult = await conn.execute(query)
-                return result.scalar_one_or_none()
+                await conn.execute(query)

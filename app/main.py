@@ -22,6 +22,14 @@ app.add_middleware(
     allow_headers=[*settings.BACKEND_CORS_HEADERS.split(",")],
 )
 
+# app.add_api_route(
+#     path="/hello",
+#     endpoint=hello_world,
+#     methods=["GET"],
+#     response_model=dict,
+#     summary="Стандартное приветствие"
+# )
+
 
 def run():
     uvicorn.run(
