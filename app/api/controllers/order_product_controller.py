@@ -5,7 +5,8 @@ from app.api.controllers.controller_contract import ControllerContract
 
 from app.dto.order_product_dto import (
     OrderProductCreateDTO,
-    OrderProductDTO
+    OrderProductDTO,
+    OrderProductWithProductDTO
 )
 from app.services.order_product_service import OrderProductService
 

@@ -13,6 +13,7 @@ from app.db.dao.product_dao import ProductDAO
 from app.db.models.order_product import OrderProduct
 
 from app.dto.order_dto import OrderCreateDTO, OrderUpdateStatusDTO
+from app.dto.stats_dto import StatsFilterDTO
 
 
 class OrderDAO(CRUDBaseDAO):
@@ -67,7 +68,22 @@ class OrderDAO(CRUDBaseDAO):
             )
             result: AsyncResult = await conn.execute(query)
             return result.unique().scalars().all()
+        
+    async def get_all_by_date(self, filter: StatsFilterDTO) -> List[Order]:
+        async with self.session_factory() as conn:
+            query = select(self.model).options(
+                joinedload(self.model.products),
+                joinedload(self.model.user)
+            )
 
+            if filter.start_date is not None:
+                query = query.where(self.model.created_at >= filter.start_date)
+            if filter.end_date is not None:
+                query = query.where(self.model.created_at <= filter.end_date)
+
+            result: AsyncResult = await conn.execute(query)
+            return result.unique().scalars().all()
+        
 
     async def update_status(self, *, order_id: int, entity_in: OrderUpdateStatusDTO) -> Order:
         async with self.session_factory() as conn:

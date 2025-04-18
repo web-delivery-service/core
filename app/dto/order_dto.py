@@ -14,8 +14,8 @@ class OrderCreateDTO(CreateDTO):
 
 
 class OrderDTO(OrderCreateDTO, BaseDTO):
-    user: UserDTO
-    products: List[OrderProductDTO]
+    user: UserDTO | None
+    products: List[OrderProductDTO] | None
 
 class OrderUpdateDTO(OrderCreateDTO):
     pass

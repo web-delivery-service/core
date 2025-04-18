@@ -10,6 +10,7 @@ from app.services.user_service import UserService
 from app.db.models.order import StatusEnum
 
 from app.job_service.jobs import send_order_recieved_email, send_order_created_email, send_order_proccess_email
+from app.dto.stats_dto import StatsFilterDTO
 
 
 class OrderService(BaseService):
@@ -39,6 +40,10 @@ class OrderService(BaseService):
 
     async def get_all(self) -> List[OrderDTO]:
         result = await self.dao.get_all()
+        return [Mapper.model_to_dto_with_relations(model=model, dto=self.dto) for model in result]
+    
+    async def get_all_by_date(self, filter: StatsFilterDTO) -> List[OrderDTO]:
+        result = await self.dao.get_all_by_date(filter=filter)
         return [Mapper.model_to_dto_with_relations(model=model, dto=self.dto) for model in result]
     
     async def update_status(self, *, order_id: int, entity_in: OrderUpdateStatusDTO) -> None:

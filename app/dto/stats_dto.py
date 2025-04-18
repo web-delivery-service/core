@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import Query
 from app.dto.base_dto import CreateDTO, BaseDTO
@@ -11,6 +11,8 @@ class StatsDTO(CreateDTO):
 
     product_quantity: int
     category_quantity: int
+
+    categories_stats: dict[str, int] # dict[category, quantity]
 
 
 class StatsFilterDTO(CreateDTO):

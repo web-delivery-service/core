@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncResult
 
@@ -5,7 +6,15 @@ from app.db.models.category import Category
 from app.db.models.product import Product
 from app.db.models.order import Order
 
+from app.dto.order_dto import OrderDTO
+from app.dto.order_product_dto import OrderProductDTO, OrderProductWithProductDTO
+from app.dto.product_dto import ProductDTO
+
+from app.services.order_product_service import OrderProductService
+
+
 from app.dto.stats_dto import StatsFilterDTO
+from app.db.models.order_product import OrderProduct
 
 class StatsDAO:
     """
@@ -14,6 +23,7 @@ class StatsDAO:
 
     def __init__(self, session_factory):
         self.session_factory = session_factory
+        self.order_product_service = OrderProductService(session_factory=session_factory)
 
 
     async def get_category_quantity(self) -> int:
@@ -77,3 +87,27 @@ class StatsDAO:
             total = result.scalar() or 0
             
             return int(total)
+
+
+    async def get_category_order_quantity(self, category_id: int, order_ids: List[int], order_products: List[OrderProductWithProductDTO]) -> int:
+        """
+        Get count of orders for a category
+        
+        Args:
+            category_id: ID of category
+            orders: List of all orders
+            order_products: List of all order_products
+        
+        Returns:
+            int: Number of orders for category
+        """
+
+        category_quantity = 0
+
+        for order_product in order_products:
+            if order_product.product.category_id == category_id and order_product.order_id in order_ids:
+                category_quantity += order_product.quantity
+
+        return category_quantity
+
+        

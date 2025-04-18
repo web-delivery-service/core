@@ -2,7 +2,8 @@ from app.db.models.base import ModelType
 from app.dto.base_dto import DTOType
 
 from app.dto.user_dto import UserDTO
-from app.dto.order_product_dto import OrderProductDTO
+from app.dto.order_product_dto import OrderProductDTO, OrderProductWithProductDTO
+from app.dto.product_dto import ProductDTO
 
 
 class Mapper:
@@ -33,6 +34,9 @@ class Mapper:
                 cls.model_to_dto(model=order_product, dto=OrderProductDTO)
                 for order_product in model.products
             ]
+
+        if hasattr(model, 'product'):
+            model_dict['product'] = cls.model_to_dto(model=model.product, dto=ProductDTO)
         
         return dto.model_validate(model_dict)
 
