@@ -8,6 +8,11 @@ class UserAlreadyExistsEmailException(BaseException):
     detail = "User with this email already exists"
 
 
+class PasswordLengthException(BaseException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "Password must have 3 and more symbols "
+
+
 class UserDoesNotExist(BaseException):
     status_code = status.HTTP_404_NOT_FOUND
     detail = "User does not exist"

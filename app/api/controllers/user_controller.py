@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from fastapi.security import HTTPBearer
 
 from app.dto.user_dto import UserUpdateDTO, UserDTO
@@ -55,3 +55,15 @@ class UserController:
         user: UserDTO = Depends(get_current_user),
     ) -> List[OrderDTO]:
         return await order_service.get_by_user_id(user_id=user.id)
+    
+    @router.delete(
+        "/",
+        status_code=status.HTTP_204_NO_CONTENT,
+        summary="Delete test user",
+        description="Delete test user if exists",
+        response_description="No content.",
+    )
+    async def delete_test_user(
+        user_service: UserService = Depends(get_user_service),
+    ) -> None:
+        await user_service.delete_test_user()

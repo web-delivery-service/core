@@ -1,5 +1,5 @@
 from typing import List
-from sqlalchemy import select, func
+from sqlalchemy import and_, select, func
 from sqlalchemy.ext.asyncio import AsyncResult
 
 from app.db.models.category import Category
@@ -89,25 +89,38 @@ class StatsDAO:
             return int(total)
 
 
-    async def get_category_order_quantity(self, category_id: int, order_ids: List[int], order_products: List[OrderProductWithProductDTO]) -> int:
-        """
-        Get count of orders for a category
-        
-        Args:
-            category_id: ID of category
-            orders: List of all orders
-            order_products: List of all order_products
-        
-        Returns:
-            int: Number of orders for category
-        """
+    async def get_all_categories_stats(self, filter: StatsFilterDTO) -> dict[str, int]:
+        async with self.session_factory() as conn:
+            order_stats_subq = (
+                select(
+                    Product.category_id,
+                    func.sum(OrderProduct.quantity).label("total_quantity")
+                )
+                .join(Product, OrderProduct.product_id == Product.id)
+                .join(Order, OrderProduct.order_id == Order.id)
+                .group_by(Product.category_id)
+            )
+ 
+            if filter.end_date:
+                order_stats_subq = order_stats_subq.where(Order.created_at <= filter.end_date)
+            if filter.start_date:
+                order_stats_subq = order_stats_subq.where(Order.created_at >= filter.start_date)
 
-        category_quantity = 0
+            order_stats_subq = order_stats_subq.subquery()
 
-        for order_product in order_products:
-            if order_product.product.category_id == category_id and order_product.order_id in order_ids:
-                category_quantity += order_product.quantity
+            query = (
+                select(
+                    Category.title,
+                    func.coalesce(order_stats_subq.c.total_quantity, 0).label("total_quantity")
+                )
+                .select_from(Category)
+                .outerjoin(
+                    order_stats_subq,
+                    Category.id == order_stats_subq.c.category_id
+                )
+            )
 
-        return category_quantity
+            result = await conn.execute(query)
+            return {row.title: row.total_quantity for row in result}
 
-        
+            

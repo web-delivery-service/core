@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncResult
 
 from app.db.models.user import User
@@ -19,3 +19,13 @@ class UserDAO(CRUDBaseDAO):
             query = select(self.model).where(self.model.email == email)
             result: AsyncResult = await conn.execute(query)
             return result.scalar_one_or_none()
+        
+
+    async def delete_test_user(self) -> None:
+        async with self.session_factory() as conn:
+            async with conn.begin():
+                query = (
+                    delete(self.model).filter_by(email='test@example.com')
+                )
+                await conn.execute(query)
+

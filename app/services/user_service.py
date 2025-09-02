@@ -10,7 +10,7 @@ from app.dto.cart_dto import CartCreateDTO
 from app.auth.password_manager import PasswordManager
 from app.utils.mapper import Mapper
 
-from app.auth.exceptions import UserAlreadyExistsEmailException
+from app.auth.exceptions import UserAlreadyExistsEmailException, PasswordLengthException
 
 from app.settings.config import auth_settings
 from app.db.models.user import RoleEnum
@@ -32,6 +32,9 @@ class UserService(BaseService):
         self.cart_service = CartService(session_factory=session_factory)
 
     async def create(self, *, credentials: RegisterUserDTO) -> Optional[UserDTO]:
+        if len(credentials.password) < 3:
+            raise PasswordLengthException
+
         user = await self.get_user_by_email(email=credentials.email)
         if user:
             raise UserAlreadyExistsEmailException
@@ -56,3 +59,6 @@ class UserService(BaseService):
     async def get_user_by_email(self, *, email: str) -> Optional[UserWithPasswordDTO]:
         user = await self.dao.get_by_email(email=email)
         return Mapper.model_to_dto(model=user, dto=UserWithPasswordDTO)
+    
+    async def delete_test_user(self) -> None:
+        await self.dao.delete_test_user()

@@ -8,6 +8,7 @@ BASE_DIR = Path(__file__).parent.parent
 class Settings(BaseSettings):
     FASTAPI_APP_HOST: str
     FASTAPI_APP_PORT: int
+    API_BASE_URL: str
 
     PROJECT_NAME: str
     PROJECT_VERSION: str

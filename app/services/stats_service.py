@@ -28,20 +28,7 @@ class StatsService:
         order_quantity = await self.dao.get_order_quantity(filter=filter)
         total_cost = await self.dao.get_order_total_cost(filter=filter)
 
-        categories_stats = {}
-
-        categories = await self.category_service.get_all()
-        orders = await self.order_service.get_all_by_date(filter=filter)
-        order_ids = [order.id for order in orders]
-
-        order_products: List[OrderProductWithProductDTO] = await self.order_product_service.get_all_with_products()
-
-        for category in categories:
-            categories_stats[category.title] = await self.dao.get_category_order_quantity(
-                category_id=category.id,
-                order_ids=order_ids, 
-                order_products=order_products
-            )
+        categories_stats = await self.dao.get_all_categories_stats(filter=filter)
 
         return StatsDTO(
             order_quantity=order_quantity,
